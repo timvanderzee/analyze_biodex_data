@@ -27,8 +27,11 @@ traw = 0:dt:(N-1)*dt;
 %% plot
 figure(1)
 
-subplot(211)
+subplot(311)
 plot(traw, analogData(:,2))
 
-subplot(212)
+subplot(312)
 plot(traw, analogData(:,20))
+
+subplot(313)
+plot(traw, analogData(:,17))
