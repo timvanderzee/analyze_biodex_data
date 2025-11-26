@@ -2,10 +2,15 @@ clc
 clear
 close all
 
-addpath(genpath(cd))
 filename =  '5-20a.c3d';
+foldername = which('plot_single_trial');
 
-cd('C:\Users\u0167448\Documents\GitHub\analyze_biodex_data\data')
+[pathRepoFolder,~,~] = fileparts(foldername);
+
+cd(pathRepoFolder)
+cd ..
+cd('Data')
+%%
 c3d = ezc3dRead(filename);
 
 % Check available analog channels
