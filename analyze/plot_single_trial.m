@@ -1,15 +1,15 @@
 clc
 clear
 close all
-
-cd('C:\Users\u0167448\Documents\Data\0212\P1(angle-EMG)')
+addpath(genpath('C:\Users\u0167448\Documents\GitHub\analyze_biodex_data'))
+cd('C:\Users\u0167448\Documents\Data\0412\Z')
 
 vs = 'abcdefghij';
 
 ti = -.1:.001:.1;
 
-acts = [10 20];
-phis = [15 30 45];
+acts = [20 30];
+phis = [5 15 25 35];
 p = 1;
 
 ls = {':','-'};
@@ -20,12 +20,12 @@ intData = nan(length(ti), 4, length(vs));
 for l = 1:length(acts)
     
 for k = 1:length(phis)
-    figure(k)
+    figure;
     phi = phis(k);
 
 for i = 1:length(vs)
     
-        filename =  [num2str(phi), '-',num2str(acts(l)), vs(i),'.c3d'];
+        filename =  ['Z-', num2str(phi), '-',num2str(acts(l)), vs(i),'.c3d'];
         
     if exist(filename, 'file')
         
@@ -50,7 +50,8 @@ for j = 1:4
 end
 
 figure(20)
-plot(mean(intData(:,1,:),3, 'omitnan')- mean(intData(1,1,:),3, 'omitnan'), (mean(intData(:,4,:),3, 'omitnan')- mean(intData(1,4,:),3, 'omitnan')), 'color', color(k,:), 'marker', ms{l}); hold on
+id = ti < .02 & ti > 0;
+plot(mean(intData(id,1,:),3, 'omitnan')- mean(intData(1,1,:),3, 'omitnan'), (mean(intData(id,4,:),3, 'omitnan')- mean(intData(1,4,:),3, 'omitnan')), 'color', color(k,:), 'marker', ms{l}); hold on
 end
 end
 
@@ -86,7 +87,7 @@ analogLabels = c3d.parameters.ANALOG.LABELS.DATA;
 analogData = c3d.data.analogs;  % [samples × channels]
 
 N = length(analogData(:,17));
-fs = 2000;
+fs = 1000;
 dt = 1/fs;
 traw = 0:dt:(N-1)*dt;
 
@@ -104,7 +105,7 @@ for id = id1
     filtData(:,id) = abs(filtfilt(b,a,analogData(:,id)));
 end
 
-fc = 20;
+fc = 10;
 Wn = fc / (fs*.5);
 [b,a] = butter(2, Wn);
 
@@ -113,7 +114,7 @@ for id = [id1 id2]
 end
 
 %% sync
-ids = [17 18 2 20];
+ids = [17 18 12 20];
 g = [110 77746 1];
 
 phi0 = mean(filtData(traw < .05,ids(1)));
