@@ -2,16 +2,20 @@ clc
 clear
 close all
 
-cd('C:\Users\u0167448\Documents\Data\adrien(angle-EMG)')
+cd('C:\Users\u0167448\Documents\Data\0212\P1(angle-EMG)')
 
-vs = 'abcde';
+vs = 'abcdefghij';
 
 ti = -.1:.001:.1;
 
-acts = [20 40];
-phis = [5 25 45];
+acts = [10 20];
+phis = [15 30 45];
+p = 1;
 
 ls = {':','-'};
+ms = {'o', 's'};
+
+intData = nan(length(ti), 4, length(vs));
 
 for l = 1:length(acts)
     
@@ -20,13 +24,17 @@ for k = 1:length(phis)
     phi = phis(k);
 
 for i = 1:length(vs)
-    filename =  [num2str(phi), '-',num2str(acts(l)), vs(i),'.c3d'];
     
-    [t, selData] = analyze_trial(filename, 0);
-    
-    mps = [1 1 1 -1];
-    for j = 1:4
-        intData(:,j,i) = interp1(t, selData(:,j), ti) * mps(j);
+        filename =  [num2str(phi), '-',num2str(acts(l)), vs(i),'.c3d'];
+        
+    if exist(filename, 'file')
+        
+        [t, selData] = analyze_trial(filename, 0);
+
+        mps = [1 1 1 -1];
+        for j = 1:4
+            intData(:,j,i) = interp1(t, selData(:,j), ti) * mps(j);
+        end
     end
     
 end
@@ -38,10 +46,11 @@ color = get(gca, 'colororder');
 ylabels = {'Angle','Velocity', 'Activation', 'Torque'};
 for j = 1:4
     subplot(1,4,j)
-    plot(ti, mean(intData(:,j,:),3), 'color', color(k,:), 'linestyle', ls{l}, 'linewidth', 1.5); hold on
-
-
+    plot(ti, mean(intData(:,j,:),3, 'omitnan'), 'color', color(k,:), 'linestyle', ls{l}, 'linewidth', 1.5); hold on
 end
+
+figure(20)
+plot(mean(intData(:,1,:),3, 'omitnan')- mean(intData(1,1,:),3, 'omitnan'), (mean(intData(:,4,:),3, 'omitnan')- mean(intData(1,4,:),3, 'omitnan')), 'color', color(k,:), 'marker', ms{l}); hold on
 end
 end
 
@@ -58,7 +67,7 @@ for j = 1:4
     title(ylabels{j})
 end
 
-legend('5','25','45', 'location', 'best')
+legend('15','30','45', 'location', 'best')
 legend boxoff
 
 subplot(143)
