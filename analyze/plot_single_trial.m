@@ -3,6 +3,7 @@ githubfolder = uigetdir('C:\', 'Select GitHub folder');
 datafolder = uigetdir('C:\', 'Select data folder');
 % datafolder = 'C:\Users\u0167448\Documents\Data\0412\Z';
 cd(datafolder)
+addpath(genpath(githubfolder))
 
 %% do analysis
 alfabet = 'a':'z';
