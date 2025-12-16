@@ -70,7 +70,7 @@ function[id] = analyze_trial(filename)
 
         [id, ~] = ginput(1);
 
-        xline(id(1),'k--')
+        xline(id(1),'r--')
         pause
 
     
