@@ -43,8 +43,7 @@ yline(T0,'k--')
 m = .65 + 15 + 1.13; % kg
 r = .35; % m
 MG = m * 9.81 * r;
-scale_fac = MG / (T1 - T0);
-
+scale_fac = MG / (T1 - T0); % 77746
 %%
 figure(2)
 plot(t, tau*scale_fac)

@@ -30,7 +30,7 @@ close all
 for i = 1:length(files)
     figure(i)
     subplot(311)
-    plot(data(i).angle - data(i).angle(1)); hold on
+    plot(data(i).angle); hold on
     
     subplot(312)
     plot(data(i).velocity); hold on
@@ -40,16 +40,16 @@ for i = 1:length(files)
 end
 
 % clear id
-% for i = 1:10
+% for i = 1:3
 %     [id(i,:), ~] = ginput(2);
 %     
-%     subplot(313)
+%     subplot(311)
 %     xline(id(i,1), 'k--')
 %     xline(id(i,2), 'r--')
 %     drawnow
 % end
 
-id = [  1428        7813
+idT = [  1428        7813
        17557       30662
        39735       50823
        60904       74681
@@ -59,23 +59,37 @@ id = [  1428        7813
       183888      194304
       202369      216818
       223370      230763];
-    
-%% MVC trials
+  
+  idA = [
+            2800        7569
+       26440       39712
+       67915       73306];
+%%
 Tm = nan(1,9);
 for i = 1:9
-    Tm(i) = mean(data(1).torque(id(i,1):id(i,2)));
+    Tm(i) = mean(data(1).torque(idT(i,1):idT(i,2)));
 end
 
+Am = nan(1,3);
+for i = 1:3
+    Am(i) = mean(data(2).angle(idA(i,1):idA(i,2)));
+end
+
+dAm = Am-Am(1);
 dTm = Tm-Tm(1);
 
+% true torque
 w = (25.07 + 24.99) * 0.453592; % [kg]
 F = w * 9.81;
 r = 2.54 * (0:8) / 100;
 Tr = F * r;
 
-close all
-figure(1)
+% true angle
+Ar = -([90 60 120] - 90);
 
+figure(10)
+
+subplot(121)
 plot(dTm,Tr, 'o')
 
 p = polyfit(dTm,Tr, 1);
@@ -91,3 +105,20 @@ box off
 plot(x,x,'k-')
 axis equal
 axis([0 max(Tm) 0 max(Tm)])
+
+subplot(122)
+plot(dAm,Ar, 'o')
+
+pA = polyfit(dAm,Ar, 1);
+hold on
+
+x = min(dAm):max(dAm);
+plot(x, polyval(pA, x),'--')
+
+xlabel('Gemeten hoek (deg)')
+ylabel('Daadwerkelijke hoek (deg)')
+box off
+
+plot(x,x,'k-')
+axis equal
+axis([0 max(dAm) 0 max(dAr)])
