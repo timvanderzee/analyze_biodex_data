@@ -51,6 +51,8 @@ for c = 1:length(cs)
                         % Read analog data
                         analogData = c3d.data.analogs;  % [samples × channels]
                         
+                        selectedData = analogData(idM:end,:);
+                        
                         N = length(analogData(:,17));
                         traw = 0:dt:(N-1)*dt;
                         

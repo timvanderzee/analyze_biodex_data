@@ -1,9 +1,13 @@
 clc; clear; close all
-githubfolder = uigetdir('C:\', 'Select GitHub folder');
+% githubfolder = uigetdir('C:\', 'Select GitHub folder');
+cd .. 
+cd ..
+addpath(genpath(cd))
+
 datafolder = uigetdir('C:\', 'Select data folder');
 % datafolder = 'C:\Users\u0167448\Documents\Data\0412\Z';
 cd(datafolder)
-addpath(genpath(githubfolder))
+
 
 %% do analysis
 alfabet = 'a':'z';
@@ -49,7 +53,7 @@ for k = 1:length(phis) % loop over angles
         
         for i = 1:length(vs)
             
-            filename =  ['Z-', num2str(phi), '-',num2str(acts(l)), vs(i),'.c3d'];
+            filename =  ['Y-', num2str(phi), '-',num2str(acts(l)), vs(i),'.c3d'];
             
             if exist(filename, 'file')
                 figure(k)
