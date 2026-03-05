@@ -61,20 +61,8 @@ for i = (length(folders)-8) %:-1:1
                         data(o).torque      = -analogData(:,20) * scalefac(2);
           
 
-                        subplot(6,1,1)
-                        plot(data(o).t, data(o).angle); hold on
-                        
-                        subplot(6,1,2)
-                        plot(data(o).t, data(o).velocity); hold on
-                        
-                        subplot(6,1,3)
-                        plot(data(o).t, data(o).torque); hold on
+                        data_plot(data(o));
 
-                        for k = 1:3
-                            subplot(6,1,k+3)
-                            plot(data(o).t, data(o).EMG(:,k)); hold on
-                            title(num2str(k))
-                        end
 
 %                     pause
                     end
