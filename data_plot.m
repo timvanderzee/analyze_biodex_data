@@ -1,5 +1,11 @@
 function[] = data_plot(data, id, color)
 
+if nargin == 1
+    id = 1:length(data.t);
+    color = lines(1);
+end
+
+
 subplot(3,2,1)
 plot(data.t(id), data.angle(id), 'color', color); hold on
 
