@@ -15,7 +15,7 @@ angs = 5:10:35;
 alfabet = 'a':'j';
 
 kk = 0;
-for i = (length(folders)-2) %:-1:1
+for i = (length(folders)-8) %:-1:1
     cd(fullfile(folders(i+2).folder, folders(i+2).name))
     
     subfolders = dir(cd);
@@ -27,7 +27,8 @@ for i = (length(folders)-2) %:-1:1
             cd(fullfile(subfolders(j+2).folder, subfolders(j+2).name))
             
             cd('processed')
-            load('onsets.mat', 'id')
+            ofiles = dir('*onsets.mat');
+            load(ofiles.name, 'id')
 
             cd(fullfile(subfolders(j+2).folder, subfolders(j+2).name))
             for m = 1:length(angs)
@@ -36,6 +37,7 @@ for i = (length(folders)-2) %:-1:1
                     kk = kk+1;
 %                                
                     trialname = [subfolders(j+2).name(1), '-', num2str(angs(m)), '-', num2str(acts(n))];
+                    
                     figure(kk)
                     set(gcf, 'name', trialname)
                              
