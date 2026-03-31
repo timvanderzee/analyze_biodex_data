@@ -33,7 +33,7 @@ load('MVC.mat', 'MVC', 'Tmax');
 color = turbo(10);
 
 %%
-for kk = 1:5 % participants
+for kk = 1:15 % participants
     
     disp(Ps(kk))
     
