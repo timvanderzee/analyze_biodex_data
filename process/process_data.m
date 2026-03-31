@@ -30,9 +30,10 @@ Ps = flip('L':'Z');
 dates = {'2302' '2302' '1812' '1812' '1812' '1712' '1712' '1712' '1712' '1612' '1512' '1012' '1012' '1012' '0412'};
 
 load('MVC.mat', 'MVC', 'Tmax');
-color = lines(10);
+color = turbo(10);
 
-for kk = 1:15 % participants
+%%
+for kk = 1:5 % participants
     
     disp(Ps(kk))
     
@@ -75,11 +76,13 @@ for kk = 1:15 % participants
                     id_prior = fdata(k).t > -.1 & fdata(k).t < 0;
                     id_SRS = fdata(k).t > 0 & fdata(k).t < .02;
                     
-                    if kk == 2
+                    if kk == 1
                         figure(km)
+                        set(gcf, 'name', trialname)
                         data_plot(fdata(k), 1:length(fdata(k).t), color(k,:))
                     end
                     
+                    legend('1', '2', '3', '4', '5','6', '7', '8', '9', '10')
                     % plot
                     %                             figure(km)
                     %                             data_plot(fdata(k), id_prior, color(n,:)); hold on
