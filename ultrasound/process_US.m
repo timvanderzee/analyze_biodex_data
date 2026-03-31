@@ -39,11 +39,14 @@ for c = 1:length(Ps)
 
             for o = 1:length(alfabet)
 
-                filename = fullfile(USfolder, ['Tracked_', Ps(c)], [Ps(c), '-', num2str(angs(m)), '-', num2str(acts(n)), alfabet(o), '_tracked.mat']);
+                cd(fullfile(USfolder, ['Tracked_', Ps(c)]));
+                filename = ['*-', num2str(angs(m)), '-', num2str(acts(n)), alfabet(o), '_tracked.mat'];
+                files = dir(filename);
                 
-                if exist(filename, 'file')
-                    load(filename);
+                if ~isempty(files)             
+                    load(files.name);
                 else
+       
                     disp(['Does not exist: ', filename])
                 end
                 
@@ -61,9 +64,6 @@ for c = 1:length(Ps)
     end
 end
 
-%% load torque data
-
-
 %%
 color = lines(length(angs));
 close all
@@ -74,10 +74,12 @@ gcolor = [.8 .8 .8];
 figure(1)
 for c = 1:10
     figure(c)
+    set(gcf, 'name', Ps(c))
     
     for m = 1:length(angs)
-
-        % load the torque data
+        for n = 1:length(acts)
+            
+        % load the biodex data
         filename = fullfile(Biodexfolder, [Ps(c), '-', num2str(angs(m)), '-', num2str(acts(n)),'.mat']);
 
         if exist(filename, 'file')
@@ -88,24 +90,40 @@ for c = 1:10
         Ai = nan(length(ti), 10);
         
         for i = 1:10
-%             plot(data(i).t, data(i).torque, 'color', [.5 .5 .5]); hold on
+            
+            data(i).FL = interp1(ti, FLi(:,m,n,i,c), data(i).t(:));
             
             Ai(:,i) = interp1(data(i).t, data(i).angle, ti);
             Ti(:,i) = interp1(data(i).t, data(i).torque, ti);
+        
+            subplot(311)
+            plot(data(i).t, data(i).angle, 'color', [color(m,:) .1])
+            
+            subplot(312)
+            plot(data(i).t, data(i).torque, 'color', [color(m,:) .1])
+           
+            subplot(313)
+            plot(data(i).t, data(i).FL, 'color', [color(m,:) .1])
         end
         
-        subplot(311)
-%         plot(ti, Ti, 'color', gcolor)
-        plot(ti, mean(Ai,2, 'omitnan'), 'color', color(m,:), 'linewidth', 2); hold on
         
-        subplot(312)
-%         plot(ti, Ti, 'color', gcolor)
-        plot(ti, mean(Ti,2, 'omitnan'), 'color', color(m,:), 'linewidth', 2); hold on
-        
-        subplot(313)
-%         plot(ti, squeeze(FLi(:,m,n,:,c)), 'color', gcolor)
-        plot(ti, mean(FLi(:,m,n,:,c),4, 'omitnan'), 'color', color(m,:), 'linewidth', 2); hold on
+            subplot(311)
+    %         plot(ti, Ti, 'color', gcolor)
+            plot(ti, mean(Ai,2, 'omitnan'), 'color', color(m,:), 'linewidth', 2); hold on
 
+            subplot(312)
+    %         plot(ti, Ti, 'color', gcolor)
+            plot(ti, mean(Ti,2, 'omitnan'), 'color', color(m,:), 'linewidth', 2); hold on
+
+            subplot(313)
+    %         plot(ti, squeeze(FLi(:,m,n,:,c)), 'color', gcolor)
+            plot(ti, mean(FLi(:,m,n,:,c),4, 'omitnan'), 'color', color(m,:), 'linewidth', 2); hold on
+        
+        
+        if exist(filename, 'file')
+            save(filename, 'data')
+        end
+        end
     end
 
     for i = 1:3

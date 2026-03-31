@@ -32,6 +32,8 @@ for kk = 1:15
                     
                     Fs(m,n,j,kk) = TVDdata.fps;
                     D(m,n,j,kk) = TVDdata.Height * TVDdata.cmPerPixX;
+                else
+                    disp(['Does not exist: ', trialname])
                 end
             end
         end
@@ -39,5 +41,5 @@ for kk = 1:15
 end
 
 %%
-cd('C:\Users\u0167448\Documents\GitHub\analyze_biodex_data')
-save('USdata.mat', 'Fs', 'D', 'Ps', 'dates')
+% cd('C:\Users\u0167448\Documents\GitHub\analyze_biodex_data')
+% save('USdata.mat', 'Fs', 'D', 'Ps', 'dates')
