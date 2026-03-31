@@ -1,5 +1,6 @@
 clear all; close all; clc
-mainfolder = 'C:\Users\u0167448\Documents\Data\SRS\Metingen';
+
+mainfolder = uigetdir(); 
 cd(mainfolder)
 
 acts = [20 30];
@@ -34,8 +35,8 @@ for kk = 1:15
     
     disp(Ps(kk))
     
-    subfolder = fullfile(mainfolder, num2str(dates{kk}), Ps(kk));
-    cd(fullfile(subfolder, 'processed'))
+%     subfolder = fullfile(mainfolder, num2str(dates{kk}), Ps(kk));
+%     cd(fullfile(subfolder, 'processed'))
     
     for m = 1:length(angs)        
         for n = 1:length(acts)
@@ -130,24 +131,32 @@ bar(squeeze(mean(mean(GASact,1,'omitnan'),2))')
 yline(1,'k--')
 
 %%
+close all
 figure(11)
 subplot(321)
-plot(angs, squeeze(SOL))
+plot(angs, squeeze(SOL), '-o')
+title('SOL')
 
 subplot(322)
-plot(angs, squeeze(GAS))
+plot(angs, squeeze(GAS), '-o'); hold on
+% plot(angs, squeeze(TA), '--')
+title('GAS')
 
 subplot(323)
-plot(angs, squeeze(Aj))
+plot(angs, squeeze(Aj), '-o')
+title('Angle')
 
 subplot(324)
-plot(angs, squeeze(vj))
+plot(angs, squeeze(vj), '-o')
+title('Speed')
 
 subplot(325)
-plot(angs, squeeze(Tj))
+plot(angs, squeeze(Tj), '-o')
+title('Torque')
 
 subplot(326)
-plot(angs, squeeze(kj))
+plot(angs, squeeze(kj), '-o')
+title('Stiffness')
 
 
 
