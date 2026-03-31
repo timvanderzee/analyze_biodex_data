@@ -1,5 +1,6 @@
 clear all; close all; clc
-
+cd ..
+addpath(genpath(cd))
 mainfolder = uigetdir(); 
 cd(mainfolder)
 
@@ -25,21 +26,21 @@ SOLact     = nan(10,4,2,15);
 TAact      = nan(10,4,2,15);
 GASact     = nan(10,4,2,15);
 
-Ps = 'L':'Z';
+Ps = flip('L':'Z');
 dates = {'2302' '2302' '1812' '1812' '1812' '1712' '1712' '1712' '1712' '1612' '1512' '1012' '1012' '1012' '0412'};
 
 load('MVC.mat', 'MVC', 'Tmax');
 color = lines(10);
 
-for kk = 1:15
+for kk = 1:15 % participants
     
     disp(Ps(kk))
     
 %     subfolder = fullfile(mainfolder, num2str(dates{kk}), Ps(kk));
 %     cd(fullfile(subfolder, 'processed'))
     
-    for m = 1:length(angs)        
-        for n = 1:length(acts)
+    for m = 1:length(angs) % angles        
+        for n = 1:length(acts) % activations
             
             km = km + 1;        
             
@@ -47,7 +48,7 @@ for kk = 1:15
             trialname = [Ps(kk), '-', num2str(angs(m)), '-', num2str(acts(n))];
             load([trialname, '.mat'], 'data');
             
-            for k = 1:10
+            for k = 1:10 % repetitions
                 
                 % get the starting angle
                 id = data(k).t < 0;
@@ -74,9 +75,10 @@ for kk = 1:15
                     id_prior = fdata(k).t > -.1 & fdata(k).t < 0;
                     id_SRS = fdata(k).t > 0 & fdata(k).t < .02;
                     
-                    %
-%                     figure(km)
-%                     data_plot(fdata(k), 1:length(fdata(k).t), color(k,:))
+                    if kk == 2
+                        figure(km)
+                        data_plot(fdata(k), 1:length(fdata(k).t), color(k,:))
+                    end
                     
                     % plot
                     %                             figure(km)
@@ -104,9 +106,10 @@ for kk = 1:15
 end
 
 
+
 %% remove some data
-% p13 soleus looks bad
-SOLact(:,:,:,13) = nan;
+% p3 soleus looks bad
+SOLact(:,:,:,3) = nan;
 
 %% compute joint stiffness
 kj = mean(mean(kjoint,1,'omitnan'),4,'omitnan');
@@ -131,7 +134,7 @@ bar(squeeze(mean(mean(GASact,1,'omitnan'),2))')
 yline(1,'k--')
 
 %%
-close all
+
 figure(11)
 subplot(321)
 plot(angs, squeeze(SOL), '-o')
