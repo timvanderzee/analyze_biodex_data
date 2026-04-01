@@ -5,27 +5,34 @@ if nargin == 1
     color = lines(1);
 end
 
-subplot(3,2,1)
+subplot(4,2,1)
 plot(data.t(id), data.angle(id), 'color', color, 'linewidth', 1.5); hold on
 title('Hoek')
 
+
+subplot(4,2,2)
 if isfield(data, 'FL')
-    subplot(3,2,2)
     plot(data.t(id), data.FL(id), 'color', color, 'linewidth', 1.5); hold on
-    title('Fascicle lengte')
-else
-    subplot(3,2,2)
-    plot(data.t(id), data.velocity(id), 'color', color, 'linewidth', 1.5); hold on
-    title('Hoeksnelheid')
+end
+title('Fascicle lengte')
+
+subplot(4,2,3)
+plot(data.t(id), data.velocity(id), 'color', color, 'linewidth', 1.5); hold on
+title('Hoeksnelheid')
+
+subplot(4,2,4)
+if isfield(data, 'acc')
+plot(data.t(id), data.acc(id), 'color', color, 'linewidth', 1.5); hold on
+title('Hoekversnelling')
 end
 
-subplot(3,2,3)
+subplot(4,2,5)
 plot(data.t(id), data.torque(id), 'color', color, 'linewidth', 1.5); hold on
 title('Moment')
 
 muscles = {'TA', 'SOL', 'GAS'};
 for k = 1:3
-    subplot(3,2,k+3)
+    subplot(4,2,k+5)
     plot(data.t(id), data.EMG(id,k), 'color', color, 'linewidth', 1.5); hold on
     title(muscles{k})
 end
