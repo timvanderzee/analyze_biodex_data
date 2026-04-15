@@ -43,7 +43,8 @@ load('Passive.mat', 'A', 'T')
 color = turbo(10);
 
 %%
-for kk = 1:15 % participants
+% close all
+for kk = 1:15
     
     disp(Ps(kk))
     
@@ -70,6 +71,7 @@ for kk = 1:15 % participants
                 fdata = data;
                 for mm = 1:3
                     fdata(k).EMG(:,mm) = filtfilt(b,a,abs(filtfilt(d,c,data(k).EMG(:,mm)))) ./ MVC(mm,kk);
+%                     fdata(k).EMG(:,mm) = filtfilt(d,c,data(k).EMG(:,mm)) ./ MVC(mm,kk);
                 end
                 
                 fdata(k).angle      = filtfilt(b,a,data(k).angle);
@@ -79,8 +81,8 @@ for kk = 1:15 % participants
                 fdata(k).acc = grad5(fdata(k).velocity, mean(diff(fdata(k).t)));
                 
                 if isfield(data(k), 'FL')
-                    fid = isfinite(data(k).FL);
-                    fdata(k).FL(fid)     = filtfilt(b,a,data(k).FL(fid));
+%                     fid = isfinite(data(k).FL);
+%                     fdata(k).FL(fid)     = filtfilt(b,a,data(k).FL(fid));
                 end
                 
                 % synchronize
@@ -98,19 +100,24 @@ for kk = 1:15 % participants
                         figure(km)
                         set(gcf, 'name', trialname)
                         data_plot(fdata(k), 1:length(fdata(k).t), color(k,:))
+
+%                     nexttile
+                        figure(100)
+                        plot(fdata(k).angle(id_SRS), fdata(k).torque(id_SRS), 'color', color(m,:), 'linewidth', 1); hold on
                     end
                     
-                    legend('1', '2', '3', '4', '5','6', '7', '8', '9', '10')
+%                     legend('1', '2', '3', '4', '5','6', '7', '8', '9', '10')
         
                     % stiffness calc
                     fcost = @(c,A,w,T) sum((T-(c(1)*A + c(2)*w)).^2);
                     
                     dA = fdata(k).angle(id_SRS) - fdata(k).angle(find(id_SRS,1));
                     dT = fdata(k).torque(id_SRS) - fdata(k).torque(find(id_SRS,1));
-                    dw = fdata(k).acc(id_SRS) - fdata(k).acc(find(id_SRS,1));
+                    da = fdata(k).acc(id_SRS) - fdata(k).acc(find(id_SRS,1));
                     
                     % find stiffness and inertia
-                    C = fmincon(@(c) fcost(c,dA,dw,dT), [0 0], [],[],[],[],[0 0], [], [], []);
+%                     C = fmincon(@(c) fcost(c,dA,da,dT), [0 0], [],[],[],[],[0 0], [], [], []);
+                    C = fminsearch(@(c) fcost(c,dA,da,dT), [0 0]);
 
                     % save summary terms
                     if isfield(fdata(k), 'FL')
@@ -143,7 +150,10 @@ end
 
 %% remove some data
 % p3 soleus looks bad
-SOLact(:,:,:,3) = nan;
+SOLact(:,:,:,[1 3 4 5 6 8]) = nan;
+
+% kjoint(kjoint<0) = nan;
+
 
 %% average over repetitions
 sdata = struct();
@@ -153,7 +163,7 @@ sdata.angle = squeeze(mean(ang,1,'omitnan'));
 sdata.act_level = squeeze(mean(act,1,'omitnan'));
 
 sdata.joint_stiffness = squeeze(mean(kjoint,1,'omitnan'));
-% sdata.joint_inertia = squeeze(mean(Ijoint,1,'omitnan'));
+sdata.joint_inertia = squeeze(mean(Ijoint,1,'omitnan'));
 
 sdata.joint_angle = -squeeze(mean(Ajoint,1,'omitnan'));
 sdata.joint_torque = squeeze(mean(Tjoint,1,'omitnan'));
