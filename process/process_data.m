@@ -116,8 +116,8 @@ for kk = 1:15
                     da = fdata(k).acc(id_SRS) - fdata(k).acc(find(id_SRS,1));
                     
                     % find stiffness and inertia
-%                     C = fmincon(@(c) fcost(c,dA,da,dT), [0 0], [],[],[],[],[0 0], [], [], []);
-                    C = fminsearch(@(c) fcost(c,dA,da,dT), [0 0]);
+                    C = fmincon(@(c) fcost(c,dA,da,dT), [0 0], [],[],[],[],[0 0], [], [], []);
+%                     C = fminsearch(@(c) fcost(c,dA,da,dT), [0 0]);
 
                     % save summary terms
                     if isfield(fdata(k), 'FL')
