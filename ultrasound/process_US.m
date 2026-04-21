@@ -21,6 +21,7 @@ dates = {'2302' '2302' '1812' '1812' '1812' '1712' '1712' '1712' '1712' '1612' '
 ti = -8:.01:5;
 FLi = nan(length(ti), length(angs), length(acts), length(alfabet), length(Ps));
 
+%%
 for c = 1:length(Ps)
     
     disp(Ps(c))
@@ -40,30 +41,39 @@ for c = 1:length(Ps)
             for o = 1:length(alfabet)
 
                 cd(fullfile(USfolder, ['Tracked_', Ps(c)]));
-                filename = ['*-', num2str(angs(m)), '-', num2str(acts(n)), alfabet(o), '_tracked.mat'];
+                filename = ['*-', num2str(angs(m)), '-', num2str(acts(n)), alfabet(o), '_tracked*.mat'];
                 files = dir(filename);
+                
+                if isempty(files)
+                    alt_folder = ['C:\Users\u0167448\OneDrive - KU Leuven\Master students\Adrien_Mia\Data\', Ps(c), dates{c}, '\not tracked yet\Tracked'];
+                    
+                    if isfolder(alt_folder)
+                        cd(alt_folder)
+                        files = dir(filename);
+                    end
+                end
                 
                 if ~isempty(files)             
                     load(files.name);
+                    dt = 1/1000;
+
+                    FL = Fdat.Region.FL;
+                    t = Fdat.Region.Time - id(o,n,m) * dt + 1;
+
+
+                    FLi(:,m,n,o,c) = interp1(t, FL, ti);
+
                 else
        
                     disp(['Does not exist: ', filename])
                 end
-                
-                
-                dt = 1/1000;
-                
-                FL = Fdat.Region.FL;
-                t = Fdat.Region.Time - id(o,n,m) * dt + 1;
-                
-        
-                FLi(:,m,n,o,c) = interp1(t, FL, ti);
-                
+ 
             end
         end
     end
 end
 
+return
 %%
 color = lines(length(angs));
 close all
@@ -72,7 +82,7 @@ n = 1;
 gcolor = [.8 .8 .8];
 
 figure(1)
-for c = 1:10
+for c = 1:length(Ps)
     figure(c)
     set(gcf, 'name', Ps(c))
     
@@ -119,7 +129,7 @@ for c = 1:10
     %         plot(ti, squeeze(FLi(:,m,n,:,c)), 'color', gcolor)
             plot(ti, mean(FLi(:,m,n,:,c),4, 'omitnan'), 'color', color(m,:), 'linewidth', 2); hold on
         
-        
+%         
         if exist(filename, 'file')
             save(filename, 'data')
         end
